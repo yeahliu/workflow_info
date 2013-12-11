@@ -1,0 +1,9 @@
+<template>
+<t t-name="textbox_pft_wkl">
+	<div class="oe_form_field oe_form_field_text">
+            <textarea class="field_text oe_textbox_pft_wkl"  name="description" 
+            		  style="margin-left:2px;margin-top:2px;width:485px;height: 102px; overflow: hidden; word-wrap: break-word; resize: vertical;"></textarea>
+    </div>
+</t>
+
+</template>
