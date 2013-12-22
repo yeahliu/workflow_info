@@ -36,7 +36,7 @@ class wkf_logs(osv.osv):
         'act_id': fields.many2one('workflow.activity', '工作流阶段'),
         'time': fields.datetime('处理时间'),
         'info': fields.text('记录'),
-        'status':fields.selection([('ok','通过'),('no','拒绝'),('submit','提交')],'状态'),        
+        'status':fields.selection([('ok','通过'),('no','拒绝'),('submit','提交'),('stop','中止')],'状态'),        
     }
 
 wkf_logs()

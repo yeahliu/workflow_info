@@ -1,5 +1,6 @@
 /*---------------------------------------------------------
  * workflow 增强
+ * 2013-12-22 加入workflow_stop标识，表示中止工作流
  * Copyright 2013 yeahliu <talent_qiao@163.com>
  *---------------------------------------------------------*/
 openerp.workflow_info = function(instance) {
@@ -11,24 +12,34 @@ openerp.workflow_info = function(instance) {
         do_execute_action: function (action_data, dataset, record_id, on_closed) {
 	    	//alert("action_data :"+action_data + "  dataset:"+dataset+ "  record_id: "+record_id+"  on_closed: "+on_closed )
 	    	var self = this;
-	    	if(action_data.type == "workflow_ok" || action_data.type == "workflow_no"){
-	    		ok = true;
-	    		if( action_data.type == "workflow_no") ok = false ;
+	    	if(action_data.type == "workflow_ok" || action_data.type == "workflow_no"
+	    		|| action_data.type == "workflow_stop"){
+	    		sta = "" ;
+	    		_title= "" ;
+	    		if( action_data.type == "workflow_no"){
+	    			sta = "no" ;
+	    			_title = "输入拒绝意见：" ;
+	    		} else if(action_data.type=="workflow_ok"){
+	    			sta = "ok";
+	    			_title = "输入审批意见(可不填)：";
+	    		} else if( action_data.type=="workflow_stop"){
+	    			sta = "stop";
+	    			_title = "输入中止原因：";
+	    		}
 	    		
-	    		_title = ok? "输入审批意见(可不填)：" :"输入拒绝意见："
 	    		var dialog = new instance.web.Dialog(this,{
 	    			title: _title,
 	    			dialogClass: 'oe_act_window',
 	    			width:500
 	    		},	QWeb.render("textbox_pft_wkl"));
 	    		buttons=[
-					                {text: _t("提交"), click: function() { 
+					                {text: _t("确定"), click: function() { 
 						                	return instance.session.rpc('/web/workflow_info/info', {
 										            model: dataset.model,
 										            id: record_id, // wkf_instance id
 										            signal: action_data.name,
 										            note:dialog.$el.find(".oe_textbox_pft_wkl").val(),
-										            status: ok?'ok':'no'
+										            status: sta
 										        }).then(function(){
 										        	dialog.destroy();									        
 										        }).then(function () {
@@ -53,7 +64,7 @@ openerp.workflow_info = function(instance) {
 	    	} else {
 	    		return this._super(action_data, dataset, record_id, on_closed) ;
     	}
-    },
+    }
     });
     
 };
